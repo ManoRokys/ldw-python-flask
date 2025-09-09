@@ -1,19 +1,29 @@
-from flask import Flask, render_template # Importando o Flask
+# Importando o Flask
+from flask import Flask, render_template
+# Importando o controller (routes.py)
 from controllers import routes
+# Importando os Models
 from models.database import db
+# Importando a biblioteca para manipulação do S.O.
 import os
-# Criando uma instância do Flask
-app = Flask(__name__, template_folder='views') # O __name__ representa o nome da aplicação/arquivo que está sendo executado futuramente irá ser __main__
 
+# Criando uma instância do Flask
+app = Flask(__name__, template_folder="views") # __name__ representa o nome do arquivo que está sendo executado
 routes.init_app(app)
 
+# Extraindo o Diretório Absoluto
 dir = os.path.abspath(os.path.dirname(__file__))
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(dir, 'models/games.sqlite3')
+# Criando  o arquivo do banco
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(dir, "models/games.sqlite3")
 
-# Se o arquivo for executado diretamento pelo interpretador ele vira o nome __main__ e inicia o servidor
-if __name__ == '__main__':
+# Se for executado diretamente pelo interpretador
+if __name__ == "__main__":
+    # Enviando o Flask para o SQLAlchemy
     db.init_app(app=app)
+    # Verificando no inicio da aplicação se o banco já existe. Se não, ele cria.
     with app.test_request_context():
         db.create_all()
-    app.run(host='localhost', port=5000, debug=True) # Iniciando o servidor
+        
+    # Iniciando o servidor
+    app.run(host="localhost", port=5000, debug=True)
