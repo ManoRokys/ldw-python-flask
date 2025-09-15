@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <h2 class="text-success">📊 Estatísticas do Santos</h2>
+        <p class="lead">Conquistas históricas e desempenho atual do clube</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Adicionar Nova Estatística</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="ano" class="form-label">Ano:</label>
+                        <input type="number" class="form-control" id="ano" name="ano" 
+                               placeholder="Ex: 2024" min="1900" max="2030" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="competicao" class="form-label">Competição:</label>
+                        <input type="text" class="form-control" id="competicao" name="competicao" 
+                               placeholder="Ex: Brasileirão, Copa do Brasil" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="resultado" class="form-label">Resultado:</label>
+                        <input type="text" class="form-control" id="resultado" name="resultado" 
+                               placeholder="Ex: Campeão, Vice-campeão, 3º lugar" required>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Adicionar Estatística</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">🏆 Recordes Históricos</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">✅ <strong>Pentacampeonato:</strong> 1961-1965 (único clube brasileiro)</li>
+                    <li class="mb-2">✅ <strong>Tricampeonato invicto:</strong> 1963, 1964 e 1965</li>
+                    <li class="mb-2">✅ <strong>Seis finais consecutivas:</strong> 1961-1966</li>
+                    <li class="mb-2">✅ <strong>8 títulos brasileiros</strong> no total</li>
+                    <li class="mb-2">✅ <strong>103 gols em 46 jogos</strong> (2004)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-7 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">📋 Histórico Completo</h4>
+            </div>
+            <div class="card-body">
+                {% if estatisticas %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Ano</th>
+                                    <th>Competição</th>
+                                    <th>Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for estatistica in estatisticas %}
+                                    <tr>
+                                        <td><span class="badge bg-primary">{{ loop.index }}</span></td>
+                                        <td><strong>{{ estatistica.Ano }}</strong></td>
+                                        <td>{{ estatistica.Competição }}</td>
+                                        <td>
+                                            {% if 'Campeão' in estatistica.Resultado %}
+                                                <span class="badge bg-warning text-dark">🏆 {{ estatistica.Resultado }}</span>
+                                            {% elif 'Vice-campeão' in estatistica.Resultado %}
+                                                <span class="badge bg-secondary">🥈 {{ estatistica.Resultado }}</span>
+                                            {% elif 'Rebaixamento' in estatistica.Resultado %}
+                                                <span class="badge bg-danger">📉 {{ estatistica.Resultado }}</span>
+                                            {% elif 'Acesso' in estatistica.Resultado %}
+                                                <span class="badge bg-success">⬆️ {{ estatistica.Resultado }}</span>
+                                            {% elif 'Em Andamento' in estatistica.Resultado %}
+                                                <span class="badge bg-info">🔄 {{ estatistica.Resultado }}</span>
+                                            {% else %}
+                                                <span class="badge bg-info">{{ estatistica.Resultado }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">Nenhuma estatística cadastrada ainda.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <h5>🏅 Conquistas Históricas</h5>
+            <p class="mb-0">O Santos é um dos clubes mais vencedores do Brasil com 8 títulos nacionais, 
+            incluindo o histórico pentacampeonato consecutivo (1961-1965) e o tricampeonato invicto (1963-1965). 
+            Em 2004, o clube marcou 103 gols em 46 jogos, estabelecendo um recorde histórico.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="alert alert-success">
+            <h6>📈 Temporada 2024</h6>
+            <p class="mb-0">O Santos sagrou-se campeão da Série B com 68 pontos, garantindo o acesso de volta à elite 
+            com duas rodadas de antecedência, demonstrando a força do clube mesmo em momentos difíceis.</p>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="alert alert-danger">
+            <h6>⚠️ Situação Atual 2025</h6>
+            <p class="mb-0">Em agosto de 2025, o clube ocupa a 15ª posição com 22 pontos em 21 jogos, 
+            situação preocupante que levou à demissão do técnico Cleber Xavier após derrota de 6x0 para o Vasco.</p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
