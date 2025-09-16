@@ -77,8 +77,11 @@ def init_app(app):
             db.session.add(newGame)
             db.session.commit()
             return redirect(url_for('estoque'))
-        gamesEstoque = Game.query.all()
-        return render_template('estoque.html', gamesEstoque=gamesEstoque)
+        else:
+            page = request.args.get('page',1, type=int)
+            per_page = 3 
+            gamesEstoque = Game.query.paginate(page=page, per_page=per_page)
+            return render_template('estoque.html', gamesEstoque=gamesEstoque)
     
     @app.route('/edit/<int:id>', methods=['GET', 'POST'])
     def edit(id):
