@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <h2 class="text-warning">✏️ Editar Time</h2>
+        <p class="lead">Atualize as informações do time</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">Editando: {{ time.nome }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome do Time:</label>
+                        <input type="text" class="form-control" id="nome" name="nome" 
+                               value="{{ time.nome }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cidade" class="form-label">Cidade:</label>
+                        <input type="text" class="form-control" id="cidade" name="cidade" 
+                               value="{{ time.cidade }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado (UF):</label>
+                        <input type="text" class="form-control" id="estado" name="estado" 
+                               value="{{ time.estado }}" maxlength="2" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fundacao" class="form-label">Ano de Fundação:</label>
+                        <input type="number" class="form-control" id="fundacao" name="fundacao" 
+                               value="{{ time.fundacao }}" min="1800" max="2030" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">Salvar Alterações</button>
+                        <a href="{{ url_for('times') }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

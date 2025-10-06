@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Header Principal -->
+        <div class="text-center mb-5">
+            <div class="position-relative">
+                <img src="{{url_for('static', filename='images/Santos_Logo.png')}}" 
+                     alt="Santos FC" 
+                     class="mb-3" 
+                     style="max-width: 120px; height: auto;">
+                <h1 class="text-primary display-4 fw-bold">
+                    <i class="fas fa-book me-3"></i>
+                    História do Santos Futebol Clube
+                </h1>
+                <p class="lead text-muted">
+                    <i class="fas fa-wikipedia-w me-2"></i>
+                    Fonte: <a href="https://pt.wikipedia.org/wiki/Santos_Futebol_Clube" target="_blank" class="text-decoration-none">Wikipedia</a>
+                </p>
+            </div>
+        </div>
+
+        {% if erro %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Erro ao carregar informações:</strong> {{ erro }}
+        </div>
+        {% endif %}
+
+        {% if secoes %}
+        <!-- Introdução -->
+        <div class="card shadow-lg mb-4 border-0" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+            <div class="card-body text-white text-center py-5">
+                <h2 class="card-title display-6 mb-4">
+                    <i class="fas fa-star me-3"></i>
+                    {{ titulo }}
+                </h2>
+                <p class="card-text lead mb-0">
+                    Fundado em 14 de abril de 1912, o Santos é um dos clubes mais tradicionais e vitoriosos do futebol brasileiro.
+                </p>
+            </div>
+        </div>
+
+        <!-- Seções da História -->
+        <div class="row">
+            {% for secao in secoes %}
+            <div class="col-lg-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 secao-card">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="{{ secao.icone }} me-3 fs-4"></i>
+                        <h5 class="card-title mb-0 fw-bold">{{ secao.titulo }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="historia-conteudo">
+                            {{ secao.conteudo|replace('\n', '<br>')|safe }}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Seção: {{ secao.titulo }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Seção de Destaques -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-lg border-0" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <div class="card-body text-white text-center py-4">
+                        <h3 class="card-title mb-3">
+                            <i class="fas fa-trophy me-2"></i>
+                            Principais Conquistas
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <div class="destaque-item">
+                                    <i class="fas fa-globe-americas fa-2x mb-2"></i>
+                                    <h5>3x Copa Libertadores</h5>
+                                    <small>1962, 1963, 2011</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="destaque-item">
+                                    <i class="fas fa-medal fa-2x mb-2"></i>
+                                    <h5>2x Mundial</h5>
+                                    <small>1962, 1963</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="destaque-item">
+                                    <i class="fas fa-crown fa-2x mb-2"></i>
+                                    <h5>8x Brasileirão</h5>
+                                    <small>Recorde nacional</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="destaque-item">
+                                    <i class="fas fa-star fa-2x mb-2"></i>
+                                    <h5>Pelé</h5>
+                                    <small>Maior artilheiro</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Link para Wikipedia -->
+        <div class="text-center mt-4">
+            <a href="https://pt.wikipedia.org/wiki/Santos_Futebol_Clube" 
+               target="_blank" 
+               class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-external-link-alt me-2"></i> 
+                Ver História Completa na Wikipedia
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Adicionar Font Awesome se não estiver carregado
+if (!document.querySelector('link[href*="font-awesome"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css';
+    document.head.appendChild(link);
+}
+
+// Efeito de scroll suave
+document.addEventListener('DOMContentLoaded', function() {
+    // Adicionar efeito de hover nos cards
+    const cards = document.querySelectorAll('.secao-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
+{% endblock %}

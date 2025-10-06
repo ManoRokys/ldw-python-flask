@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <h2 class="text-warning">✏️ Editar Partida</h2>
+        <p class="lead">Atualize as informações da partida</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">Editando Partida</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="data" class="form-label">Data da Partida:</label>
+                        <input type="date" class="form-control" id="data" name="data" 
+                               value="{{ partida.data.strftime('%Y-%m-%d') }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="competicao" class="form-label">Competição:</label>
+                        <input type="text" class="form-control" id="competicao" name="competicao" 
+                               value="{{ partida.competicao }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time_mandante_id" class="form-label">Time Mandante:</label>
+                        <select class="form-select" id="time_mandante_id" name="time_mandante_id" required>
+                            {% for time in times %}
+                                <option value="{{ time.id }}" {% if time.id == partida.time_mandante_id %}selected{% endif %}>
+                                    {{ time.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time_visitante_id" class="form-label">Time Visitante:</label>
+                        <select class="form-select" id="time_visitante_id" name="time_visitante_id" required>
+                            {% for time in times %}
+                                <option value="{{ time.id }}" {% if time.id == partida.time_visitante_id %}selected{% endif %}>
+                                    {{ time.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="gols_mandante" class="form-label">Gols Mandante:</label>
+                                <input type="number" class="form-control" id="gols_mandante" name="gols_mandante" 
+                                       value="{{ partida.gols_mandante }}" min="0" max="99" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="gols_visitante" class="form-label">Gols Visitante:</label>
+                                <input type="number" class="form-control" id="gols_visitante" name="gols_visitante" 
+                                       value="{{ partida.gols_visitante }}" min="0" max="99" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">Salvar Alterações</button>
+                        <a href="{{ url_for('partidas') }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <h2 class="text-primary">⚽ Gerenciamento de Times</h2>
+        <p class="lead">Cadastre e gerencie times para o sistema</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">➕ Adicionar Novo Time</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome do Time:</label>
+                        <input type="text" class="form-control" id="nome" name="nome" 
+                               placeholder="Ex: Corinthians" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cidade" class="form-label">Cidade:</label>
+                        <input type="text" class="form-control" id="cidade" name="cidade" 
+                               placeholder="Ex: São Paulo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado (UF):</label>
+                        <input type="text" class="form-control" id="estado" name="estado" 
+                               placeholder="Ex: SP" maxlength="2" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fundacao" class="form-label">Ano de Fundação:</label>
+                        <input type="number" class="form-control" id="fundacao" name="fundacao" 
+                               placeholder="Ex: 1910" min="1800" max="2030" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Adicionar Time</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">📋 Times Cadastrados</h4>
+            </div>
+            <div class="card-body">
+                {% if times.items %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Cidade/UF</th>
+                                    <th>Fundação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for time in times.items %}
+                                    <tr>
+                                        <td>{{ time.id }}</td>
+                                        <td>{{ time.nome }}</td>
+                                        <td>{{ time.cidade }}/{{ time.estado }}</td>
+                                        <td>{{ time.fundacao }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ url_for('time_jogadores', id=time.id) }}" class="btn btn-info">
+                                                    <i class="fas fa-users"></i> Jogadores
+                                                </a>
+                                                <a href="{{ url_for('edit_time', id=time.id) }}" class="btn btn-warning">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                                <a href="{{ url_for('times', id=time.id) }}" class="btn btn-danger" 
+                                                   onclick="return confirm('Tem certeza que deseja excluir este time?')">
+                                                    <i class="fas fa-trash"></i> Excluir
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginação -->
+                    <nav aria-label="Navegação de times">
+                        <ul class="pagination justify-content-center">
+                            {% if times.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('times', page=times.prev_num) }}">Anterior</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Anterior</span>
+                                </li>
+                            {% endif %}
+                            
+                            {% for num in times.iter_pages() %}
+                                {% if num %}
+                                    {% if num == times.page %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('times', page=num) }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if times.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('times', page=times.next_num) }}">Próximo</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Próximo</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0 text-center">Nenhum time cadastrado ainda.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

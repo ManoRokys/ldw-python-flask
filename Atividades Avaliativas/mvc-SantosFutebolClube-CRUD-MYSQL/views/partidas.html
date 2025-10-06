@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-4">
+        <h2 class="text-danger">⚽ Gerenciamento de Partidas</h2>
+        <p class="lead">Cadastre e gerencie partidas entre os times</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">➕ Adicionar Nova Partida</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="data" class="form-label">Data da Partida:</label>
+                        <input type="date" class="form-control" id="data" name="data" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="competicao" class="form-label">Competição:</label>
+                        <input type="text" class="form-control" id="competicao" name="competicao" 
+                               placeholder="Ex: Brasileirão Série A" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time_mandante_id" class="form-label">Time Mandante:</label>
+                        <select class="form-select" id="time_mandante_id" name="time_mandante_id" required>
+                            <option value="" selected disabled>Selecione o time mandante</option>
+                            {% for time in times %}
+                                <option value="{{ time.id }}">{{ time.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time_visitante_id" class="form-label">Time Visitante:</label>
+                        <select class="form-select" id="time_visitante_id" name="time_visitante_id" required>
+                            <option value="" selected disabled>Selecione o time visitante</option>
+                            {% for time in times %}
+                                <option value="{{ time.id }}">{{ time.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="gols_mandante" class="form-label">Gols Mandante:</label>
+                                <input type="number" class="form-control" id="gols_mandante" name="gols_mandante" 
+                                       value="0" min="0" max="99" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label for="gols_visitante" class="form-label">Gols Visitante:</label>
+                                <input type="number" class="form-control" id="gols_visitante" name="gols_visitante" 
+                                       value="0" min="0" max="99" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Adicionar Partida</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">📋 Partidas Cadastradas</h4>
+            </div>
+            <div class="card-body">
+                {% if partidas.items %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Competição</th>
+                                    <th>Mandante</th>
+                                    <th>Placar</th>
+                                    <th>Visitante</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for partida in partidas.items %}
+                                    <tr>
+                                        <td>{{ partida.data.strftime('%d/%m/%Y') }}</td>
+                                        <td>{{ partida.competicao }}</td>
+                                        <td>{{ partida.time_mandante.nome }}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-dark">
+                                                {{ partida.gols_mandante }} x {{ partida.gols_visitante }}
+                                            </span>
+                                        </td>
+                                        <td>{{ partida.time_visitante.nome }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ url_for('edit_partida', id=partida.id) }}" class="btn btn-warning">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                                <a href="{{ url_for('partidas', id=partida.id) }}" class="btn btn-danger" 
+                                                   onclick="return confirm('Tem certeza que deseja excluir esta partida?')">
+                                                    <i class="fas fa-trash"></i> Excluir
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginação -->
+                    <nav aria-label="Navegação de partidas">
+                        <ul class="pagination justify-content-center">
+                            {% if partidas.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('partidas', page=partidas.prev_num) }}">Anterior</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Anterior</span>
+                                </li>
+                            {% endif %}
+                            
+                            {% for num in partidas.iter_pages() %}
+                                {% if num %}
+                                    {% if num == partidas.page %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('partidas', page=num) }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if partidas.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('partidas', page=partidas.next_num) }}">Próximo</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">Próximo</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% else %}
+                    <div class="alert alert-info">
+                        <p class="mb-0 text-center">Nenhuma partida cadastrada ainda.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
